@@ -1,0 +1,37 @@
+
+name: Practice 2 CI-CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Run tests
+        run: python -m pytest -v
+
+      - name: Prepare deployment files
+        run: |
+          mkdir -p deployment
+          cp app.py requirements.txt deployment/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: practice2-deployment
+          path: deployment/
